@@ -1,0 +1,79 @@
+<?php
+
+function hook_schema() {
+  $schema['node'] = array(
+    // Example (partial) specification for table "node".
+    'description' => 'The base table for nodes.',
+    'fields' => array(
+      'price' => array(
+        'description' => 'The primary identifier for a node.',
+        'type' => 'int',
+        
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'Name' => array(
+        'description' => 'The current {node_revision}.vid version identifier.',
+        'type' => 'char',
+        'length' => '30',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      )
+  )
+);
+    return $schema;
+   }
+function form_example_menu() {
+  $items = array();
+
+  $items['examples/form-example'] = array( //this creates a URL that will call this form at "examples/form-example"
+    'title' => 'Example Form', //page title
+    'description' => 'A form to mess around with.',
+    'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+    'page arguments' => array('form_example_form'), //put the name of the form here
+    'access callback' => TRUE
+  );
+
+  return $items;
+}
+
+function form_example_form($form, &$form_state) {
+  
+ $form['price'] = array(
+    '#type' => 'textfield', //you can find a list of available types in the form api
+    '#title' => 'What is Your Price?',
+    '#size' => 10,
+    '#maxlength' => 10,
+    '#required' => TRUE, //make this field required 
+  );
+ $form['Name'] = array(
+    '#type' => 'textfield', //you can find a list of available types in the form api
+    '#title' => 'Name',
+    '#size' => 10,
+    '#maxlength' => 100,
+    '#required' => TRUE, //make this field required 
+  );
+
+  $form['submit_button'] = array(
+    '#type' => 'submit',
+    '#value' => t('Click Here!'),
+  );
+  
+  return $form;
+}
+
+function form_example_form_validate($form, &$form_state) {
+  if (!($form_state['values']['price'] > 0)){
+    form_set_error('price', t('Price must be a positive number.'));
+  }
+}
+function form_example_form_submit($form, &$form_state) {
+  	$fe_id = db_insert('form_example_table')->fields(array(
+		'price' => $form_state['values']['price'],
+		'Name' => $form_state['values']['Name'],
+	))
+	->execute();
+	drupal_set_message(t('ur entry has been added'));
+  
+}

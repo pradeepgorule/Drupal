@@ -1,0 +1,24 @@
+<?php 
+function form_example_schema() {
+ $schema['form_example_table'] = array(
+    'description' => 'D7 Example Table',
+    'fields' => array(
+      'price' => array(
+        'description' => 'Primary ID',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'D7 Example Table Name',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('price'),
+  );
+  return $schema;
+}
+
+
+
+
